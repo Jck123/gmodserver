@@ -1,0 +1,29 @@
+{
+	"title"		:	"Advanced Duplicator 2",
+	"type"		:	"tool",
+	"tags"		:	[ "build" ],
+	"description":	"Ground up rewrite meant to make up for some of the shortcomings of the first iteration of AdvDupe.",
+	"ignore"	:
+	[
+		"*.psd",
+		"*.vcproj",
+		"*.svn*",
+		"*.txt",
+		"*.xcf",
+		".git*",
+		".gitignore",
+		".luacheckrc",
+		".travis.yml",
+		"CODE_OF_CONDUCT.md",
+		"CONTRIBUTING.md",
+		"generate-luacheck.sh",
+		"git-hooks-pre-commit",
+		"gitrid.sh",
+		"icon.tga",
+		"advdupe2icon.jpg",
+		"advdupe2icon.psd",
+		"license",
+		"readme.md",
+		"SECURITY.md"
+	]
+}
