@@ -10,10 +10,10 @@ ULib.RELEASE = false -- Don't access these two directly, use ULib.pluginVersionS
 ULib.VERSION = 2.63
 ULib.AUTOMATIC_UPDATE_CHECKS = true
 
-ULib.ACCESS_ALL = "member"
+ULib.ACCESS_ALL = "user"
 ULib.ACCESS_OPERATOR = "operator"
-ULib.ACCESS_ADMIN = "manager"
-ULib.ACCESS_SUPERADMIN = "developer"
+ULib.ACCESS_ADMIN = "admin"
+ULib.ACCESS_SUPERADMIN = "superadmin"
 
 ULib.DEFAULT_ACCESS = ULib.ACCESS_ALL
 
