@@ -52,7 +52,7 @@ local defaultGroupsText = -- To populate initially or when the user deletes it
 	"allow"
 	{
 	}
-	"can_target"    "!%admin"
+	"can_target"    "!%manager"
 }
 
 "manager"
@@ -61,7 +61,7 @@ local defaultGroupsText = -- To populate initially or when the user deletes it
 	{
 	}
 	"inherit_from"	"operator"
-	"can_target"    "!%superadmin"
+	"can_target"    "!%developer"
 }
 
 "developer"
@@ -69,7 +69,7 @@ local defaultGroupsText = -- To populate initially or when the user deletes it
 	"allow"
 	{
 	}
-	"inherit_from"	"admin"
+	"inherit_from"	"manager"
 }
 
 "member"
