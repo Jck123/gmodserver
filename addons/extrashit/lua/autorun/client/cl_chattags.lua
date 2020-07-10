@@ -11,10 +11,6 @@ hook.Add("OnPlayerChat", "jckChattags", function(ply, text)
     end
 end)
 
-hook.Add("PlayerInitialSpawn", "jckJoin", function(ply)
-    chat.AddText(Color(255, 255, 255), "User ", Color(0,0,255), ply:Nick(), Color(255, 255, 255), " has joined the server!")
-end)
-
 //Hides default leave message (Totally not stolen from the wiki...)
 hook.Add("ChatText","hide_joinleave",function(index,name,text,typ)
     if (typ == "joinleave") then return true end
