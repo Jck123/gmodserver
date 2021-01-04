@@ -9,6 +9,7 @@ function trigger.Create(startVec, endVec, name)
         if !dmgInfo:GetAttacker():IsPlayer() or !ent:IsPlayer() then return end
         local vicPos = ent:GetPos()
         if vicPos.x > startVec.x and vicPos.x < endVec.x and vicPos.y > startVec.y and vicPos.y < endVec.y and vicPos.z > startVec.z and vicPos.z < endVec.z then
+            --TODO: Remove SendLua() function
             dmgInfo:GetAttacker():SendLua("notification.AddLegacy('Fuck off', NOTIFY_ERROR, 15)")
             return true
         end
