@@ -4,7 +4,7 @@
 //    hook.Add("Initialize", "mapexec", function()
         --local file = "../mapexec/" .. game.GetMap() .. ".lua"
         --require file
-        resource.AddFile("../mapexec/" .. game.GetMap() .. ".lua")
+        resource.AddFile("addons/triggermapexec/" .. game.GetMap() .. ".lua")
         --require("")
 //    end)
 //end
