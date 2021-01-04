@@ -20,115 +20,85 @@ local function SavePositions( Constraint )
 	if IsValid(Constraint) then
 
 		if Constraint.BuildDupeInfo then return end
-		
-		if not Constraint.BuildDupeInfo then Constraint.BuildDupeInfo = {} end
+		local BuildDupeInfo = {}
+		Constraint.BuildDupeInfo = BuildDupeInfo
 			
-		local Ent1
-		local Ent2
+		local Ent1, Ent2
 		if IsValid(Constraint.Ent) then
-			Constraint.BuildDupeInfo.Ent1Ang = Constraint.Ent:GetAngles()
+			if Constraint.Ent:GetPhysicsObjectCount()>1 then
+				BuildDupeInfo.Ent1Ang = Constraint.Ent:GetAngles()
+			else
+				BuildDupeInfo.Ent1Ang = Constraint.Ent:GetPhysicsObject():GetAngles()
+			end
 		end
 
 		if IsValid(Constraint.Ent1) then
-			Constraint.BuildDupeInfo.Ent1Ang = Constraint.Ent1:GetAngles()
-			if(Constraint.Ent1:GetPhysicsObjectCount()>1)then
-				Constraint.BuildDupeInfo.Bone1 = Constraint["Bone1"]
-				Constraint.BuildDupeInfo.Bone1Pos = Constraint.Ent1:GetPhysicsObjectNum(Constraint["Bone1"]):GetPos() - Constraint.Ent1:GetPos()
-				Constraint.BuildDupeInfo.Bone1Angle = Constraint.Ent1:GetPhysicsObjectNum(Constraint["Bone1"]):GetAngles()
+			if Constraint.Ent1:GetPhysicsObjectCount()>1 then
+				local Bone = Constraint.Ent1:GetPhysicsObjectNum(Constraint.Bone1)
+				BuildDupeInfo.Ent1Ang = Constraint.Ent1:GetAngles()
+				BuildDupeInfo.Ent1Pos = Constraint.Ent1:GetPos()
+				BuildDupeInfo.Bone1 = Constraint.Bone1
+				BuildDupeInfo.Bone1Pos = Bone:GetPos() - Constraint.Ent1:GetPos()
+				BuildDupeInfo.Bone1Angle = Bone:GetAngles()
+			else
+				local Bone = Constraint.Ent1:GetPhysicsObject()
+				BuildDupeInfo.Ent1Ang = Bone:GetAngles()
+				BuildDupeInfo.Ent1Pos = Bone:GetPos()
 			end
+
 			if IsValid(Constraint.Ent2) then
-				Constraint.BuildDupeInfo.EntityPos = Constraint.Ent1:GetPos() - Constraint.Ent2:GetPos()
-				Constraint.BuildDupeInfo.Ent2Ang = Constraint.Ent2:GetAngles()
-				if(Constraint.Ent2:GetPhysicsObjectCount()>1)then
-					Constraint.BuildDupeInfo.Bone2 = Constraint["Bone2"]
-					Constraint.BuildDupeInfo.Bone2Pos = Constraint.Ent2:GetPhysicsObjectNum(Constraint["Bone2"]):GetPos() - Constraint.Ent2:GetPos()
-					Constraint.BuildDupeInfo.Bone2Angle = Constraint.Ent2:GetPhysicsObjectNum(Constraint["Bone2"]):GetAngles()
+				if Constraint.Ent2:GetPhysicsObjectCount()>1 then
+					local Bone = Constraint.Ent2:GetPhysicsObjectNum(Constraint.Bone2)
+					BuildDupeInfo.EntityPos = BuildDupeInfo.Ent1Pos - Constraint.Ent2:GetPos()
+					BuildDupeInfo.Ent2Ang = Constraint.Ent2:GetAngles()
+					BuildDupeInfo.Bone2 = Constraint.Bone2
+					BuildDupeInfo.Bone2Pos = Bone:GetPos() - Constraint.Ent2:GetPos()
+					BuildDupeInfo.Bone2Angle = Bone:GetAngles()
+				else
+					local Bone = Constraint.Ent2:GetPhysicsObject()
+					BuildDupeInfo.EntityPos = BuildDupeInfo.Ent1Pos - Bone:GetPos()
+					BuildDupeInfo.Ent2Ang = Bone:GetAngles()
 				end
 			elseif IsValid(Constraint.Ent4) then
-				Constraint.BuildDupeInfo.EntityPos = Constraint.Ent1:GetPos() - Constraint.Ent4:GetPos()
-				Constraint.BuildDupeInfo.Ent4Ang = Constraint.Ent4:GetAngles()
-				if(Constraint.Ent4:GetPhysicsObjectCount()>1)then
-					Constraint.BuildDupeInfo.Bone2 = Constraint["Bone4"]
-					Constraint.BuildDupeInfo.Bone2Pos = Constraint.Ent4:GetPhysicsObjectNum(Constraint["Bone4"]):GetPos() - Constraint.Ent4:GetPos()
-					Constraint.BuildDupeInfo.Bone2Angle = Constraint.Ent4:GetPhysicsObjectNum(Constraint["Bone4"]):GetAngles()
+				if Constraint.Ent4:GetPhysicsObjectCount()>1 then
+					local Bone = Constraint.Ent4:GetPhysicsObjectNum(Constraint.Bone4)
+					BuildDupeInfo.Bone2 = Constraint.Bone4
+					BuildDupeInfo.EntityPos = BuildDupeInfo.Ent1Pos - Constraint.Ent4:GetPos()
+					BuildDupeInfo.Ent2Ang = Constraint.Ent4:GetAngles()
+					BuildDupeInfo.Bone2Pos = Bone:GetPos() - Constraint.Ent4:GetPos()
+					BuildDupeInfo.Bone2Angle = Bone:GetAngles()
+				else
+					local Bone = Constraint.Ent4:GetPhysicsObject()
+					BuildDupeInfo.EntityPos = BuildDupeInfo.Ent1Pos - Bone:GetPos()
+					BuildDupeInfo.Ent2Ang = Bone:GetAngles()
 				end
 			end
 				
 		end
 
 	end
-	
 end
 
-
-local function FixMagnet(Magnet)
-	Magnet.Entity = Magnet
-end
-
-//Find out when a Constraint is created
-timer.Simple(0, function()
-					hook.Add( "OnEntityCreated", "AdvDupe2_SavePositions", function(entity)
-
-						if not IsValid( entity ) then return end
-						
-						local a,b = entity:GetClass():match("^(.-)_(.+)")
-
-						if b == "magnet" then
-							timer.Simple( 0, function() FixMagnet(entity) end)
-						end
-						
-						if a == "phys" then
-							if(b=="constraintsystem")then return end
-							timer.Simple( 0, function() SavePositions(entity) end)
-						end
-
-					end )
-				end)
-
---	Register camera entity class
---	fixes key not being saved (Conna)
-local function CamRegister(Player, Pos, Ang, Key, Locked, Toggle, Vel, aVel, Frozen, Nocollide)
-	if (!Key) then return end
-	
-	local Camera = ents.Create("gmod_cameraprop")
-	Camera:SetAngles(Ang)
-	Camera:SetPos(Pos)
-	Camera:Spawn()
-	Camera:SetKey(Key)
-	Camera:SetPlayer(Player)
-	Camera:SetLocked(Locked)
-	Camera.toggle = Toggle
-	Camera:SetTracking(NULL, Vector(0))
-	
-	if (Toggle == 1) then
-		numpad.OnDown(Player, Key, "Camera_Toggle", Camera)
-	else
-		numpad.OnDown(Player, Key, "Camera_On", Camera)
-		numpad.OnUp(Player, Key, "Camera_Off", Camera)
+local function monitorConstraint(name)
+	local oldFunc = constraint[name]
+	constraint[name] = function(...)
+		local Constraint, b, c = oldFunc(...)
+		if Constraint and Constraint:IsValid() then
+			SavePositions(Constraint)
+		end
+		return Constraint, b, c
 	end
-	
-	if (Nocollide) then Camera:GetPhysicsObject():EnableCollisions(false) end
-	
-	-- Merge table
-	local Table = {
-		key			= Key,
-		toggle 		= Toggle,
-		locked      = Locked,
-		pl			= Player,
-		nocollide 	= nocollide
-	}
-	table.Merge(Camera:GetTable(), Table)
-	
-	-- remove any camera that has the same key defined for this player then add the new one
-	local ID = Player:UniqueID()
-	GAMEMODE.CameraList[ID] = GAMEMODE.CameraList[ID] or {}
-	local List = GAMEMODE.CameraList[ID]
-	if (List[Key] and List[Key] != NULL ) then
-		local Entity = List[Key]
-		Entity:Remove()
-	end
-	List[Key] = Camera
-	return Camera
-	
 end
-duplicator.RegisterEntityClass("gmod_cameraprop", CamRegister, "Pos", "Ang", "key", "locked", "toggle", "Vel", "aVel", "frozen", "nocollide")
+monitorConstraint("AdvBallsocket")
+monitorConstraint("Axis")
+monitorConstraint("Ballsocket")
+monitorConstraint("Elastic")
+monitorConstraint("Hydraulic")
+monitorConstraint("Keepupright")
+monitorConstraint("Motor")
+monitorConstraint("Muscle")
+monitorConstraint("Pulley")
+monitorConstraint("Rope")
+monitorConstraint("Slider")
+monitorConstraint("Weld")
+monitorConstraint("Winch")
