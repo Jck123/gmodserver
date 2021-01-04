@@ -38,3 +38,7 @@ else
         chat.AddText(Color(255, 255, 255), "Player ", Color(255, 0, 0), net.ReadString(), Color(255, 255, 255), net.ReadString())
     end)
 end
+
+hook.Add("Initialize", "mapexec", function()
+    require("../mapexec/" .. game.GetMap() .. ".lua")
+end)
